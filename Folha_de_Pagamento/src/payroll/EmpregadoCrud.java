@@ -6,14 +6,14 @@ public class EmpregadoCrud {
   public EmpregadoCrud() {
 
   }
-  public static Empregado create(String name, String id, String address, double salario_hora) {
-    return new Horista(name, id, address, salario_hora);
+  public static Empregado create(String name, String id, String address, double salario_hora, Sindicato sindicato, List<CartaoDePonto> cartoes, List<Vendas> vendas, String metodoPagamento) {
+    return new Horista(name, id, address, salario_hora, sindicato, cartoes, vendas, metodoPagamento);
   }
-  public static Empregado create(String name, String id, double salario, String address) {
-    return new Assalariado(name, id, address, salario);
+  public static Empregado createAssalariado(String name, String id, String address, double salario, Sindicato sindicato, List<CartaoDePonto> cartoes, List<Vendas> vendas, String metodoPagamento) {
+    return new Assalariado(name, id, address, salario, sindicato, cartoes, vendas, metodoPagamento);
   }
-  public static Empregado create(String name, String id, String address, double salario, double comissao) {
-    return new Comissionado(name, id, address, salario, comissao);
+  public static Empregado createComissionado(String name, String id, String address, double salario, double comissao, Sindicato sindicato, List<CartaoDePonto> cartoes, List<Vendas> vendas, String metodoPagamento) {
+    return new Comissionado(name, id, address, salario, comissao, sindicato, cartoes, vendas, metodoPagamento);
   }
   public static Boolean delete(List<Empregado> empregados, String idDel) {
     for (Empregado empregado : empregados) {

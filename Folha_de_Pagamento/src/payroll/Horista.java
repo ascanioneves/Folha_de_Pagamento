@@ -1,21 +1,14 @@
 package payroll;
 
+import java.util.List;
 import java.util.UUID;
 
 public class Horista extends Empregado
 {
   private double salario_hora;
-  public Horista()
+  public Horista(String name, String id, String address, double salario_hora, Sindicato sindicato, List<CartaoDePonto> cartoes, List<Vendas> vendas, String metodoPagamento)
   {
-
-  }
-  public Horista(double salario_hora)
-  {
-    this.salario_hora = salario_hora;
-  }
-  public Horista(String name, String id, String address, double salario_hora)
-  {
-    super(name, id, address);
+    super(name, id, address, sindicato, cartoes, vendas, metodoPagamento);
     this.salario_hora = salario_hora;
   }
   public double getSalario_hora() {
@@ -27,6 +20,6 @@ public class Horista extends Empregado
   @Override
     public String toString() 
     {
-      return super.toString() + "\nSalario: " + getSalario_hora();
+      return "Horista: \n" + super.toString() + "\nSalario: " + getSalario_hora();
     }
 }

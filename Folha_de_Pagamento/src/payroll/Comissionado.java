@@ -1,19 +1,20 @@
 package payroll;
 
+import java.util.List;
 import java.util.UUID;
 
 public class Comissionado extends Empregado
 {
   private double salario;
   private double comissao;
-  public Comissionado(double salario, double comissao)
+  //public Comissionado(double salario, double comissao)
+  //{
+    //this.salario = salario;
+    //this.comissao = comissao;
+  //} 
+  public Comissionado(String name, String id, String address, double salario, double comissao, Sindicato sindicato,List<CartaoDePonto> cartoes, List<Vendas> vendas, String metodoPagamento)
   {
-    this.salario = salario;
-    this.comissao = comissao;
-  } 
-  public Comissionado(String name, String id, String address, double salario, double comissao)
-  {
-    super(name, id, address);
+    super(name, id, address, sindicato, cartoes, vendas, metodoPagamento);
     this.salario = salario;
     this.comissao = comissao;
   }
@@ -29,6 +30,6 @@ public class Comissionado extends Empregado
   @Override
     public String toString() 
     {
-      return super.toString() + "\nSalario: " + getSalario();
+      return "Comissionado: \n" + super.toString() + "\nSalario: " + getSalario();
     }
 }
