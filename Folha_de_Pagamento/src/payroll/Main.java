@@ -7,6 +7,8 @@ import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import javax.swing.border.EmptyBorder;
+
 public class Main {
   public static void main(String[] args) {
     int state = 1;
@@ -156,7 +158,7 @@ public class Main {
             Scanner in = new Scanner(System.in);
             in.useLocale(Locale.ENGLISH);
             System.out.println("[1] Alterar nome\n[2] Alterar endereco\n[3] Alterar tipo\n[4] Alterar metodo de pagamento");
-            System.out.println("[5] Alterar participacao no sindicato\n[0] Sair");
+            System.out.println("[5] Alterar participacao no sindicato\n[6] Alterar indentificacao no sindicato\n[7] Alterar taxa sindical\n[0] Sair");
             menuAlteracao = in.nextInt();
             String clear = in.nextLine();
             if (menuAlteracao == 0) {
@@ -222,6 +224,26 @@ public class Main {
                   Sindicato sindicato = new Sindicato(idSindicato, empAtual.getId(), taxa);
                   empAtual.setSindicato(sindicato);
                 }
+              }
+            }
+            else if (menuAlteracao == 6) {
+              if (empAtual.getSindicato() == null) {
+                System.out.println("O empregado não pertence a um sindicato!");
+              }
+              else {
+                String idEmpSind = UUID.randomUUID().toString();
+                empAtual.getSindicato().setIdEmp(idEmpSind);
+                System.out.println("ID alterado para: " + idEmpSind);
+              }
+            }
+            else if (menuAlteracao == 7) {
+              if (empAtual.getSindicato() == null) {
+                System.out.println("O empregado não pertence a um sindicato!");
+              }
+              else {
+                System.out.println("Digite a nova taxa para o sindicato: ");
+                double tx = input.nextDouble();
+                empAtual.getSindicato().setTaxaSindicato(tx);
               }
             }
           }

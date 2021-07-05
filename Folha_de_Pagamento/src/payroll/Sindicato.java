@@ -23,8 +23,14 @@ public class Sindicato {
   public String getIdEmp() {
     return idEmp;
   }
+  public void setIdEmp(String idEmp) {
+    this.idEmp = idEmp;
+  }
   public double getTaxaSindicato() {
     return taxaSindicato;
+  }
+  public void setTaxaSindicato(double taxaSindicato) {
+    this.taxaSindicato = taxaSindicato;
   }
   public List<Taxa> getTaxa() {
     return taxas;
