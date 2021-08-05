@@ -12,15 +12,17 @@ public abstract class Empregado
   private List<CartaoDePonto> cartoes = new ArrayList<CartaoDePonto>();
   private List<Vendas> vendas = new ArrayList<Vendas>();
   private Sindicato sindicato;
+  private int type;
 
 
-  public Empregado(String name, String id, String address, Sindicato sindicato, List<CartaoDePonto> cartoes, List<Vendas> vendas, String metodoPagamento)
+  public Empregado(String name, String id, String address, Sindicato sindicato, int type, List<CartaoDePonto> cartoes, List<Vendas> vendas, String metodoPagamento)
   {
     this.name = name;
     this.id = id;
     this.address = address;
     this.metodoPagamento = metodoPagamento;
     this.sindicato = sindicato;
+    this.type = type;
     this.vendas = new ArrayList<Vendas>();
     this.cartoes = new ArrayList<CartaoDePonto>();
   }
@@ -32,6 +34,12 @@ public abstract class Empregado
   }
   public String getName() {
     return name;
+  }
+  public int getType() {
+    return type;
+  }
+  public void setType(int type) {
+    this.type = type;
   }
   public void setAddress(String address) {
     this.address = address;

@@ -6,23 +6,31 @@ import java.util.UUID;
 public class Comissionado extends Empregado
 {
   private double salario;
+  private double salario_inicial;
   private double comissao;
   //public Comissionado(double salario, double comissao)
   //{
     //this.salario = salario;
     //this.comissao = comissao;
   //} 
-  public Comissionado(String name, String id, String address, double salario, double comissao, Sindicato sindicato,List<CartaoDePonto> cartoes, List<Vendas> vendas, String metodoPagamento)
+  public Comissionado(String name, String id, String address, double salario, double salario_inicial, double comissao, Sindicato sindicato, int type, List<CartaoDePonto> cartoes, List<Vendas> vendas, String metodoPagamento)
   {
-    super(name, id, address, sindicato, cartoes, vendas, metodoPagamento);
+    super(name, id, address, sindicato, type, cartoes, vendas, metodoPagamento);
     this.salario = salario;
     this.comissao = comissao;
+    this.salario_inicial = salario_inicial;
   }
   public double getSalario() {
-    return salario + comissao * 1.5;
+    return salario;
   }
   public void setSalario(double salario) {
     this.salario = salario;
+  }
+  public double getComissao() {
+    return comissao;
+  }
+  public double getSalarioInicial() {
+    return salario_inicial;
   }
   public void setComissao(double comissao) {
     this.comissao = comissao;
