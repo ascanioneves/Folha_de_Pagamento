@@ -19,15 +19,26 @@ public class Main {
   public static void main(String[] args) {
     int state = 1;
     List<Empregado> empregados = new ArrayList<Empregado>();
+    List<Empregado> emp_aux2 = new ArrayList<Empregado>();
+    List<Empregado> emp_aux3 = new ArrayList<Empregado>();
+
+
+    int undo = 0, redo = 0, ult_op = 0;
+    String id_aux = "";
     while (state != 0) {
       Scanner input = new Scanner(System.in);
       input.useLocale(Locale.ENGLISH);
       System.out.println("[1] Para cadastrar um empregado\n[2] Remover um empregado\n[3] Lancar cartao de ponto\n[4] Listar os empregados");
-      System.out.println("[5] Cadastrar venda\n[6] Lancar taxa de servico\n[7] Alterar dados de um empregado\n[8] Rodar folha para hoje\n[0] Para sair\n");
+      System.out.println("[5] Cadastrar venda\n[6] Lancar taxa de servico\n[7] Alterar dados de um empregado\n[8] Rodar folha para hoje");
+      System.out.println("[9] Undo\n[0] Sair");
+      if (state != 4) { //pois o estado 4 é de listar empregados, ou seja, n é uma operação
+        ult_op = state;
+      }
       state = input.nextInt();
       if (state == 0) {
         break;
       }
+      copy_emp(empregados, emp_aux2);
       input = new Scanner(System.in);
       input.useLocale(Locale.ENGLISH);
       if (state == 1) {
@@ -41,6 +52,7 @@ public class Main {
         int tipo = input.nextInt();
         String id = UUID.randomUUID().toString();
         Empregado empregado;
+        undo = 1;
         if (tipo == 1) {
           System.out.println("Digite o salario por hora do empregado " + nome + ": ");
           double salario_hora = input.nextDouble();
@@ -73,6 +85,7 @@ public class Main {
         System.out.println("Informe o ID do empregado a ser removido: ");
         String idDel = input.nextLine();
         Boolean del = EmpregadoCrud.delete(empregados, idDel);
+        undo = 1;
         if (del) {
           System.out.println("Empregado removido com sucesso!\n");
         }
@@ -84,6 +97,7 @@ public class Main {
         Boolean exists = false;
         System.out.println("Informe o ID do empregado para o lancamento do cartao de ponto: ");
         String idEmp = input.nextLine();
+        id_aux = idEmp;
         for (Empregado empregado : empregados) {
           if (empregado.getId().equals(idEmp)) {
             exists = true;
@@ -92,6 +106,7 @@ public class Main {
             System.out.println("Informe o horario de saida");
             String saida = input.nextLine();
             empregado.getCartoes().add(new CartaoDePonto(entrada, saida));
+            undo = 1;
             break;
           }
         }
@@ -103,6 +118,7 @@ public class Main {
         Boolean exists = false;
         System.out.println("Informe o ID do empregado para cadastrar sua venda: ");
         String idEmp = input.nextLine();
+        id_aux = idEmp;
         for (Empregado empregado : empregados) {
           if (empregado.getId().equals(idEmp)) {
             exists = true;
@@ -112,6 +128,7 @@ public class Main {
             System.out.println("Informe a data da venda: ");
             String data = input.nextLine();
             empregado.getVendas().add(new Vendas(valor, data));
+            undo = 1;
             break;
           }
         }
@@ -127,6 +144,7 @@ public class Main {
         Boolean exists = false;
         System.out.println("Informe o ID do empregado para lancar a sua taxa de servico: ");
         String idEmp = input.nextLine();
+        id_aux = idEmp;
         for (Empregado empregado : sindicatoLista) {
           if (empregado.getId().equals(idEmp)) {
             exists = true;
@@ -136,6 +154,7 @@ public class Main {
             System.out.println("Informe o nome do servico: ");
             String servico = input.nextLine();
             empregado.getSindicato().getTaxa().add(new Taxa(valor, servico));
+            undo = 1;
             break;
           }
         }
@@ -160,11 +179,13 @@ public class Main {
         }
         else {
           int menuAlteracao = 1;
+          undo = 1;
           while (menuAlteracao != 0) {
             Scanner in = new Scanner(System.in);
             in.useLocale(Locale.ENGLISH);
             System.out.println("[1] Alterar nome\n[2] Alterar endereco\n[3] Alterar tipo\n[4] Alterar metodo de pagamento");
-            System.out.println("[5] Alterar participacao no sindicato\n[6] Alterar indentificacao no sindicato\n[7] Alterar taxa sindical\n[0] Sair");
+            System.out.println("[5] Alterar participacao no sindicato\n[6] Alterar indentificacao no sindicato\n[7] Alterar taxa sindical");
+            System.out.println("[8] Undo\n[0] Sair");
             menuAlteracao = in.nextInt();
             String clear = in.nextLine();
             if (menuAlteracao == 0) {
@@ -252,6 +273,10 @@ public class Main {
                 empAtual.getSindicato().setTaxaSindicato(tx);
               }
             }
+            else if (menuAlteracao == 8) {
+              
+            }
+      
           }
         }
       }
@@ -265,57 +290,22 @@ public class Main {
         DayOfWeek dayOfWeek = DayOfWeek.from(date);
         int lastDay = Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_MONTH);
         ArrayList<Empregado> ans = new ArrayList<Empregado>();
+        undo = 1;
         for (Empregado e : empregados) {
           //[1] Horista [2] Assalariado [3] Comissionado
-          double retirar = 0;
-          if (e.getSindicato() != null) {
-            retirar = e.getSindicato().getTaxaSindicato();
-            for (Taxa s : e.getSindicato().getTaxa()) {
-              retirar += s.getValor();
-            }
-          }
           if (e.getType() == 1) {
             if (dayOfWeek.getValue() == 5) {
-              int total = 0;
-              for (CartaoDePonto c : e.getCartoes()) {
-                String ent;
-                String sai;
-                ent = c.getEntrada();
-                sai = c.getSaida();
-
-                int horas = Integer.parseInt(sai) - Integer.parseInt(ent);
-                total += horas;
-              }
-              Horista h = (Horista) e;
-              double parcela = 0;
-              if (total > 8) {
-                parcela = total - 8;
-                h.setSalario((8 * h.getSalario_hora() + parcela * h.getSalario_hora() * 1.5) - retirar);
-              }
-              else {
-                h.setSalario((total * h.getSalario_hora()) - retirar);
-              }
               ans.add(e);
             }
           }
           else if (e.getType() == 2) {
             if (date.getDayOfMonth() == lastDay) {
-              Assalariado a = (Assalariado) e;
-              a.setSalario(a.getSalarioInicial() - retirar);
               ans.add(e);
             }
           }
           else if (e.getType() == 3) {
             //pagando por padrao nas 2 primeiras sextas
             if (dayOfWeek.getValue() == 4 && (date.getDayOfMonth() <= 14)) {
-              double total = 0;
-              Comissionado c = (Comissionado) e;
-              if (e.getVendas() != null) {
-                for (Vendas v : e.getVendas()) {
-                  total += v.getValor() * c.getComissao();
-                }
-              }
-              c.setSalario(c.getSalarioInicial() + total);
               ans.add(e);
             }
           }
@@ -326,6 +316,94 @@ public class Main {
           System.out.println(x);
           System.out.print("################################\n");
         }
+      }
+      if (state == 9) { //undo e redo
+        if (undo == 1) {
+          //adicionei um emp
+          if (ult_op == 1) {
+            System.out.println("Undo realizado com sucesso!");
+            System.out.println("O Empregado " + empregados.get(empregados.size() - 1).getName() + " foi retirado!");
+            EmpregadoCrud.delete(empregados, empregados.get(empregados.size() - 1).getId());
+            //copy_emp(emp_aux2, empregados);
+          }
+          //removi um emp
+          else if (ult_op == 2) {
+            System.out.println("Undo realizado com sucesso!");
+            System.out.println("O Empregado " + emp_aux2.get(emp_aux2.size() - 1).getName() + " foi recuperado!");
+            empregados.add(emp_aux2.get(emp_aux2.size() - 1));
+            //copy_emp(emp_aux2, empregados);
+          }
+          //lançamento de cartao de ponto
+          else if (ult_op == 3) {
+            for (Empregado empregado : empregados) {
+              if (empregado.getId().equals(id_aux)) {
+                empregado.getCartoes().remove(empregado.getCartoes().size() - 1);
+                System.out.println("Undo realizado com sucesso!");
+                System.out.println("O cartao de ponto do empregado " + empregado.getName() + " que foi adicionado foi removido!");
+                System.out.println(empregado);
+                break;
+              }
+            }
+          }
+          //cadastrar venda
+          else if (ult_op == 5) {
+            for (Empregado empregado : empregados) {
+              if (empregado.getId().equals(id_aux)) {
+                empregado.getVendas().remove(empregado.getVendas().size() - 1);
+                System.out.println("Undo realizado com sucesso!");
+                System.out.println("A venda do empregado " + empregado.getName() + " que foi adicionada foi removida!");
+                System.out.println(empregado);
+                break;
+              }
+            }
+          }
+          //lançar taxa de serviço
+          else if (ult_op == 6) {
+            for (Empregado empregado : empregados) {
+              if (empregado.getId().equals(id_aux)) {
+                //empregado.getTaxas().remove(empregado.getVendas().size() - 1);
+                System.out.println("Undo realizado com sucesso!");
+                System.out.println("A taxa referente a " + empregado.getSindicato().getTaxa().get(empregado.getSindicato().getTaxa().size() - 1).getServico() + " do empregado " + empregado.getName() + " foi removida!");
+                empregado.getSindicato().getTaxa().remove(empregado.getSindicato().getTaxa().size() - 1);
+                //System.out.println(empregado);
+                break;
+              }
+            }
+          }
+          else if (ult_op == 7) {
+
+          }
+          redo = 1;
+          //System.out.println("");
+        }
+        //for (Empregado e : emp_aux2) {
+          //System.out.println(e + "\n");
+        //}
+      }
+    }
+  }
+  public static void copy_emp(List<Empregado> emp, List<Empregado> emp_aux) {
+    for (Empregado e : emp) {
+      String name = e.getName();
+      String id = e.getId();
+      String address = e.getAddress();
+      Sindicato sindicato = e.getSindicato();
+      int type = e.getType();
+      List<CartaoDePonto> cartoes = e.getCartoes();
+      List<Vendas> vendas = e.getVendas();
+      String metodo = e.getMetodo();
+
+      if (type == 1) {
+        Horista h = (Horista) e;
+        emp_aux.add(new Horista(name, id, address, h.getSalario_hora(), h.getSalario(), sindicato, type, cartoes, vendas, metodo));
+      }
+      else if (type == 2) {
+        Assalariado a = (Assalariado) e;
+        emp_aux.add(new Assalariado(name, id, address, a.getSalario(), a.getSalarioInicial(), sindicato, type, cartoes, vendas, metodo));
+      }
+      else if (type == 3) {
+        Comissionado c = (Comissionado) e;
+        emp_aux.add(new Comissionado(name, id, address, c.getSalario(), c.getSalarioInicial(), c.getComissao(), sindicato, type, cartoes, vendas, metodo));
       }
     }
   }

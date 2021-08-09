@@ -18,7 +18,14 @@ public class Assalariado extends Empregado
     this.salario_inicial = salario_inicial;
   }
   public double getSalario() {
-    return salario;
+    double retirar = 0;
+    if (this.getSindicato() != null) {
+      retirar = this.getSindicato().getTaxaSindicato();
+      for (Taxa s : this.getSindicato().getTaxa()) {
+        retirar += s.getValor();
+      }
+    }
+    return salario_inicial - retirar;
   }
   public void setSalario(double salario) {
     this.salario = salario;

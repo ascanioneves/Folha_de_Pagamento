@@ -21,7 +21,13 @@ public class Comissionado extends Empregado
     this.salario_inicial = salario_inicial;
   }
   public double getSalario() {
-    return salario;
+    double total = 0;
+    if (this.getVendas() != null) {
+      for (Vendas v : this.getVendas()) {
+        total += v.getValor() * this.getComissao();
+      }
+    }
+    return salario + total;
   }
   public void setSalario(double salario) {
     this.salario = salario;

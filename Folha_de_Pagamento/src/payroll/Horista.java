@@ -23,7 +23,31 @@ public class Horista extends Empregado
     this.salario = salario;
   }
   public double getSalario() {
-    return salario;
+    int total = 0;
+    double retirar = 0;
+    if (this.getSindicato() != null) {
+      retirar = this.getSindicato().getTaxaSindicato();
+      for (Taxa s : this.getSindicato().getTaxa()) {
+        retirar += s.getValor();
+      }
+    }
+    for (CartaoDePonto c : this.getCartoes()) {
+      String ent;
+      String sai;
+      ent = c.getEntrada();
+      sai = c.getSaida();
+
+      int horas = Integer.parseInt(sai) - Integer.parseInt(ent);
+      total += horas;
+    }
+    double parcela = 0;
+    if (total > 8) {
+      parcela = total - 8;
+      return (8 * this.getSalario_hora() + parcela * this.getSalario_hora() * 1.5) - retirar;
+    }
+    else {
+      return (total * this.getSalario_hora()) - retirar;
+    }
   }
   @Override
     public String toString() 
