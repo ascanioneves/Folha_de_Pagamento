@@ -7,9 +7,9 @@ public class Horista extends Empregado
 {
   private double salario_hora;
   private double salario;
-  public Horista(String name, String id, String address, double salario_hora, double salario, Sindicato sindicato, int type, List<CartaoDePonto> cartoes, List<Vendas> vendas, String metodoPagamento)
+  public Horista(String name, String id, String address, double salario_hora, double salario, Sindicato sindicato, int type, int tipo_pagamento, List<CartaoDePonto> cartoes, List<Vendas> vendas, String metodoPagamento)
   {
-    super(name, id, address, sindicato, type, cartoes, vendas, metodoPagamento);
+    super(name, id, address, sindicato, type, tipo_pagamento, cartoes, vendas, metodoPagamento);
     this.salario_hora = salario_hora;
     this.salario = salario;
   }
@@ -41,13 +41,24 @@ public class Horista extends Empregado
       total += horas;
     }
     double parcela = 0;
+    double sal = 0;
     if (total > 8) {
       parcela = total - 8;
-      return (8 * this.getSalario_hora() + parcela * this.getSalario_hora() * 1.5) - retirar;
+      sal = (8 * this.getSalario_hora() + parcela * this.getSalario_hora() * 1.5) - retirar;
     }
     else {
-      return (total * this.getSalario_hora()) - retirar;
+      sal = (total * this.getSalario_hora()) - retirar;
     }
+    double alt = 1;
+    //mensalmente
+    if (this.getTipoPagamento() == 2) {
+      alt = 4;
+    }
+    //bi-semanal
+    else if (this.getTipoPagamento() == 3) {
+      alt = 2;
+    }
+    return sal * alt;
   }
   @Override
     public String toString() 

@@ -11,9 +11,9 @@ public class Assalariado extends Empregado
   //{
     //this.salario = salario;
   //}
-  public Assalariado(String name, String id, String address, double salario, double salario_inicial, Sindicato sindicato, int type, List<CartaoDePonto> cartoes, List<Vendas> vendas, String metodoPagamento)
+  public Assalariado(String name, String id, String address, double salario, double salario_inicial, Sindicato sindicato, int type, int tipo_pagamento, List<CartaoDePonto> cartoes, List<Vendas> vendas, String metodoPagamento)
   {
-    super(name, id, address, sindicato, type, cartoes, vendas, metodoPagamento);
+    super(name, id, address, sindicato, type, tipo_pagamento, cartoes, vendas, metodoPagamento);
     this.salario = salario;
     this.salario_inicial = salario_inicial;
   }
@@ -25,7 +25,18 @@ public class Assalariado extends Empregado
         retirar += s.getValor();
       }
     }
-    return salario_inicial - retirar;
+    double sal = 0;
+    double alt = 1;
+    sal = salario_inicial - retirar;
+    //sou mensal mas quero pagar semanal: /4
+    if (this.getTipoPagamento() == 1) { 
+      alt = 4;
+    }
+    //sou mensal mas quero pagar bi-semanal
+    else if (this.getTipoPagamento() == 3) {
+      alt = 2;
+    }
+    return sal / alt;
   }
   public void setSalario(double salario) {
     this.salario = salario;

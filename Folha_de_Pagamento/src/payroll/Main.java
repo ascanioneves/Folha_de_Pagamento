@@ -30,7 +30,7 @@ public class Main {
       input.useLocale(Locale.ENGLISH);
       System.out.println("[1] Para cadastrar um empregado\n[2] Remover um empregado\n[3] Lancar cartao de ponto\n[4] Listar os empregados");
       System.out.println("[5] Cadastrar venda\n[6] Lancar taxa de servico\n[7] Alterar dados de um empregado\n[8] Rodar folha para hoje");
-      System.out.println("[9] Undo\n[0] Sair");
+      System.out.println("[9] Undo\n[10] Agenda de Pagamento\n[0] Sair");
       if (state != 4) { //pois o estado 4 é de listar empregados, ou seja, n é uma operação
         ult_op = state;
       }
@@ -38,6 +38,7 @@ public class Main {
       if (state == 0) {
         break;
       }
+      emp_aux2.clear();
       copy_emp(empregados, emp_aux2);
       input = new Scanner(System.in);
       input.useLocale(Locale.ENGLISH);
@@ -56,19 +57,19 @@ public class Main {
         if (tipo == 1) {
           System.out.println("Digite o salario por hora do empregado " + nome + ": ");
           double salario_hora = input.nextDouble();
-          empregado = EmpregadoCrud.create(nome, id, endereco, salario_hora, 0, null, tipo, null, null, metodo);
+          empregado = EmpregadoCrud.create(nome, id, endereco, salario_hora, 0, null, tipo, tipo, null, null, metodo);
         }
         else if (tipo == 3) {
           System.out.println("Digite o salario do empregado " + nome + ": ");
           double salario = input.nextDouble();
           System.out.println("Digite a comissao do empregado " + nome + ": ");
           double comissao = input.nextDouble();
-          empregado = EmpregadoCrud.createComissionado(nome, id, endereco, salario, salario, comissao, null, tipo, null, null, metodo);
+          empregado = EmpregadoCrud.createComissionado(nome, id, endereco, salario, salario, comissao, null, tipo, tipo, null, null, metodo);
         }
         else {
           System.out.println("Digite o salario do empregado " + nome + ": ");
           double salario = input.nextDouble();
-          empregado = EmpregadoCrud.createAssalariado(nome, id, endereco, salario, salario, null, tipo, null, null, metodo);
+          empregado = EmpregadoCrud.createAssalariado(nome, id, endereco, salario, salario, null, tipo, tipo, null, null, metodo);
         }
         empregados.add(empregado);
         System.out.println("Deseja participar do sindicato?\n[1] Sim\n[2] Nao\n");
@@ -166,6 +167,7 @@ public class Main {
         Boolean exists = false;
         System.out.println("Informe o ID do empregado a ser alterado: ");
         String idEmp = input.nextLine();
+        id_aux = idEmp;
         Empregado empAtual = null;
         for (Empregado empregado : empregados) {
           if (empregado.getId().equals(idEmp)) {
@@ -191,7 +193,14 @@ public class Main {
             if (menuAlteracao == 0) {
               break;
             }
+            emp_aux2.clear();
+            copy_emp(empregados, emp_aux2);
+            for (Empregado e : emp_aux2) {
+              System.out.println(emp_aux2 + "\n");
+            }
+            ult_op = menuAlteracao;
             if (menuAlteracao == 1) {
+              
               System.out.println("Informe o novo nome: ");
               String newName = in.nextLine();
               empAtual.setName(newName);
@@ -211,20 +220,20 @@ public class Main {
                 System.out.println("Informe o salario por hora: ");
                 double salario_hora = in.nextDouble();
                 clear = in.nextLine();
-                empAtual = EmpregadoCrud.create(aux.getName(), aux.getId(), aux.getAddress(), salario_hora, 0, aux.getSindicato(), tipo, aux.getCartoes(), aux.getVendas(), aux.getMetodo());
+                empAtual = EmpregadoCrud.create(aux.getName(), aux.getId(), aux.getAddress(), salario_hora, 0, aux.getSindicato(), tipo, tipo, aux.getCartoes(), aux.getVendas(), aux.getMetodo());
               }
               else if (tipo == 2) {
                 System.out.println("Digite o salario do empregado: ");
                 double salario = input.nextDouble();
                 clear = in.nextLine();
-                empAtual = EmpregadoCrud.createAssalariado(aux.getName(), aux.getId(), aux.getAddress(), salario, salario, aux.getSindicato(), tipo, aux.getCartoes(), aux.getVendas(), aux.getMetodo());
+                empAtual = EmpregadoCrud.createAssalariado(aux.getName(), aux.getId(), aux.getAddress(), salario, salario, aux.getSindicato(), tipo, tipo, aux.getCartoes(), aux.getVendas(), aux.getMetodo());
               }
               else if (tipo == 3) {
                 System.out.println("Digite o salario do empregado: ");
                 double salario = input.nextDouble();
                 System.out.println("Digite a comissao do empregado: ");
                 double comissao = input.nextDouble();
-                empAtual = EmpregadoCrud.createComissionado(aux.getName(), aux.getId(), aux.getAddress(), salario, salario, comissao, aux.getSindicato(), tipo, aux.getCartoes(), aux.getVendas(), aux.getMetodo());
+                empAtual = EmpregadoCrud.createComissionado(aux.getName(), aux.getId(), aux.getAddress(), salario, salario, comissao, aux.getSindicato(), tipo, tipo, aux.getCartoes(), aux.getVendas(), aux.getMetodo());
               }
               empregados.add(empAtual);
             }
@@ -273,6 +282,7 @@ public class Main {
                 empAtual.getSindicato().setTaxaSindicato(tx);
               }
             }
+            //undo
             else if (menuAlteracao == 8) {
               
             }
@@ -292,93 +302,48 @@ public class Main {
         ArrayList<Empregado> ans = new ArrayList<Empregado>();
         undo = 1;
         for (Empregado e : empregados) {
-          //[1] Horista [2] Assalariado [3] Comissionado
-          if (e.getType() == 1) {
+          //[1] Semanal [2] Mensal [3] Bi-semanal
+          if (e.getTipoPagamento() == 1) {
             if (dayOfWeek.getValue() == 5) {
               ans.add(e);
             }
           }
-          else if (e.getType() == 2) {
+          else if (e.getTipoPagamento() == 2) {
             if (date.getDayOfMonth() == lastDay) {
               ans.add(e);
             }
           }
-          else if (e.getType() == 3) {
+          else if (e.getTipoPagamento() == 3) {
             //pagando por padrao nas 2 primeiras sextas
-            if (dayOfWeek.getValue() == 4 && (date.getDayOfMonth() <= 14)) {
+            if (dayOfWeek.getValue() == 5 && date.getDayOfMonth() <= 14) {
               ans.add(e);
             }
           }
+          
         }
-        System.out.println("Lista de funcionarios: ");
-        System.out.println("------------------------------");
-        for (Empregado x : ans) {
-          System.out.println(x);
-          System.out.print("################################\n");
-        }
+        pay_emp(ans);
       }
       if (state == 9) { //undo e redo
-        if (undo == 1) {
-          //adicionei um emp
-          if (ult_op == 1) {
-            System.out.println("Undo realizado com sucesso!");
-            System.out.println("O Empregado " + empregados.get(empregados.size() - 1).getName() + " foi retirado!");
-            EmpregadoCrud.delete(empregados, empregados.get(empregados.size() - 1).getId());
-            //copy_emp(emp_aux2, empregados);
+        redo = 1;
+      }
+      if (state == 10) {
+        System.out.println("Informe o ID do empregado a ser alterada a agenda de pagamento:");
+        Scanner in = new Scanner(System.in);
+        String id = in.nextLine();
+        boolean exists = false;
+        for (Empregado e : empregados) {
+          if (e.getId().equals(id)) {
+            exists = true;
+            System.out.println("Digite qual forma pagamento sera escolhida");
+            System.out.println("[1] Semanalmente\n[2] Mensalmente\n[3] Bi-semanalmente");
+            Scanner in2 = new Scanner(System.in);
+            int payment_type = in2.nextInt();
+            e.setTipoPagamento(payment_type);
           }
-          //removi um emp
-          else if (ult_op == 2) {
-            System.out.println("Undo realizado com sucesso!");
-            System.out.println("O Empregado " + emp_aux2.get(emp_aux2.size() - 1).getName() + " foi recuperado!");
-            empregados.add(emp_aux2.get(emp_aux2.size() - 1));
-            //copy_emp(emp_aux2, empregados);
-          }
-          //lançamento de cartao de ponto
-          else if (ult_op == 3) {
-            for (Empregado empregado : empregados) {
-              if (empregado.getId().equals(id_aux)) {
-                empregado.getCartoes().remove(empregado.getCartoes().size() - 1);
-                System.out.println("Undo realizado com sucesso!");
-                System.out.println("O cartao de ponto do empregado " + empregado.getName() + " que foi adicionado foi removido!");
-                System.out.println(empregado);
-                break;
-              }
-            }
-          }
-          //cadastrar venda
-          else if (ult_op == 5) {
-            for (Empregado empregado : empregados) {
-              if (empregado.getId().equals(id_aux)) {
-                empregado.getVendas().remove(empregado.getVendas().size() - 1);
-                System.out.println("Undo realizado com sucesso!");
-                System.out.println("A venda do empregado " + empregado.getName() + " que foi adicionada foi removida!");
-                System.out.println(empregado);
-                break;
-              }
-            }
-          }
-          //lançar taxa de serviço
-          else if (ult_op == 6) {
-            for (Empregado empregado : empregados) {
-              if (empregado.getId().equals(id_aux)) {
-                //empregado.getTaxas().remove(empregado.getVendas().size() - 1);
-                System.out.println("Undo realizado com sucesso!");
-                System.out.println("A taxa referente a " + empregado.getSindicato().getTaxa().get(empregado.getSindicato().getTaxa().size() - 1).getServico() + " do empregado " + empregado.getName() + " foi removida!");
-                empregado.getSindicato().getTaxa().remove(empregado.getSindicato().getTaxa().size() - 1);
-                //System.out.println(empregado);
-                break;
-              }
-            }
-          }
-          else if (ult_op == 7) {
-
-          }
-          redo = 1;
-          //System.out.println("");
         }
-        //for (Empregado e : emp_aux2) {
-          //System.out.println(e + "\n");
-        //}
+        if (!exists) {
+          System.out.println("Informe um ID valido!");
+        }
       }
     }
   }
@@ -389,22 +354,45 @@ public class Main {
       String address = e.getAddress();
       Sindicato sindicato = e.getSindicato();
       int type = e.getType();
+      int tipo_pagamento = e.getTipoPagamento();
       List<CartaoDePonto> cartoes = e.getCartoes();
       List<Vendas> vendas = e.getVendas();
       String metodo = e.getMetodo();
 
       if (type == 1) {
         Horista h = (Horista) e;
-        emp_aux.add(new Horista(name, id, address, h.getSalario_hora(), h.getSalario(), sindicato, type, cartoes, vendas, metodo));
+        emp_aux.add(new Horista(name, id, address, h.getSalario_hora(), h.getSalario(), sindicato, type, tipo_pagamento, cartoes, vendas, metodo));
       }
       else if (type == 2) {
         Assalariado a = (Assalariado) e;
-        emp_aux.add(new Assalariado(name, id, address, a.getSalario(), a.getSalarioInicial(), sindicato, type, cartoes, vendas, metodo));
+        emp_aux.add(new Assalariado(name, id, address, a.getSalario(), a.getSalarioInicial(), sindicato, type, tipo_pagamento, cartoes, vendas, metodo));
       }
       else if (type == 3) {
         Comissionado c = (Comissionado) e;
-        emp_aux.add(new Comissionado(name, id, address, c.getSalario(), c.getSalarioInicial(), c.getComissao(), sindicato, type, cartoes, vendas, metodo));
+        emp_aux.add(new Comissionado(name, id, address, c.getSalario(), c.getSalarioInicial(), c.getComissao(), sindicato, type, tipo_pagamento, cartoes, vendas, metodo));
       }
+    }
+  }
+  public static void pay_emp(List<Empregado> emp) {
+    System.out.println("Lista de funcionarios: ");
+    
+    for (Empregado e : emp) {
+      System.out.println("--------------------------------");
+      System.out.println("Nome: " + e.getName());
+      if (e.getType() == 1) {
+        Horista h = (Horista) e;
+        System.out.println("Salario: " + h.getSalario());
+      }
+      else if (e.getType() == 2) {
+        Assalariado a = (Assalariado) e;
+        System.out.println("Salario: " + a.getSalario());
+      }
+      else if (e.getType() == 3) {
+        Comissionado c = (Comissionado) e;
+        System.out.println("Salario: " + c.getSalario());
+      }
+      System.out.println("Metodo de Pagamento: " + e.getMetodo());
+      System.out.print("--------------------------------\n");
     }
   }
 }

@@ -13,9 +13,10 @@ public abstract class Empregado
   private List<Vendas> vendas = new ArrayList<Vendas>();
   private Sindicato sindicato;
   private int type;
+  private int tipo_pagamento;
 
 
-  public Empregado(String name, String id, String address, Sindicato sindicato, int type, List<CartaoDePonto> cartoes, List<Vendas> vendas, String metodoPagamento)
+  public Empregado(String name, String id, String address, Sindicato sindicato, int type, int tipo_pagamento, List<CartaoDePonto> cartoes, List<Vendas> vendas, String metodoPagamento)
   {
     this.name = name;
     this.id = id;
@@ -23,8 +24,19 @@ public abstract class Empregado
     this.metodoPagamento = metodoPagamento;
     this.sindicato = sindicato;
     this.type = type;
+    this.tipo_pagamento = tipo_pagamento;
     this.vendas = new ArrayList<Vendas>();
     this.cartoes = new ArrayList<CartaoDePonto>();
+  }
+  public boolean setTipoPagamento(int tipo_pagamento) {
+    if (tipo_pagamento >= 1 && tipo_pagamento <= 3) {
+      this.tipo_pagamento = tipo_pagamento;
+      return true;
+    }
+    return false;
+  }
+  public int getTipoPagamento() {
+    return tipo_pagamento;
   }
   public String getAddress() {
     return address;

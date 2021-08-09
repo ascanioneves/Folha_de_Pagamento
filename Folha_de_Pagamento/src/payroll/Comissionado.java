@@ -13,9 +13,9 @@ public class Comissionado extends Empregado
     //this.salario = salario;
     //this.comissao = comissao;
   //} 
-  public Comissionado(String name, String id, String address, double salario, double salario_inicial, double comissao, Sindicato sindicato, int type, List<CartaoDePonto> cartoes, List<Vendas> vendas, String metodoPagamento)
+  public Comissionado(String name, String id, String address, double salario, double salario_inicial, double comissao, Sindicato sindicato, int type, int tipo_pagamento, List<CartaoDePonto> cartoes, List<Vendas> vendas, String metodoPagamento)
   {
-    super(name, id, address, sindicato, type, cartoes, vendas, metodoPagamento);
+    super(name, id, address, sindicato, type, tipo_pagamento, cartoes, vendas, metodoPagamento);
     this.salario = salario;
     this.comissao = comissao;
     this.salario_inicial = salario_inicial;
@@ -27,7 +27,17 @@ public class Comissionado extends Empregado
         total += v.getValor() * this.getComissao();
       }
     }
-    return salario + total;
+    double sal = 0;
+    sal = salario + total;
+    //sou bi-semanal mas quero receber semanal
+    if (this.getTipoPagamento() == 1) {
+      return sal / 2;
+    }
+    //sou bi-semanal mas quero receber mensal
+    else if (this.getTipoPagamento() == 2) {
+      return sal * 2;
+    }
+    return sal;
   }
   public void setSalario(double salario) {
     this.salario = salario;
