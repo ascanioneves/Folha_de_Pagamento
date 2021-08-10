@@ -11,9 +11,9 @@ public class Assalariado extends Empregado
   //{
     //this.salario = salario;
   //}
-  public Assalariado(String name, String id, String address, double salario, double salario_inicial, Sindicato sindicato, int type, int tipo_pagamento, List<CartaoDePonto> cartoes, List<Vendas> vendas, String metodoPagamento)
+  public Assalariado(String name, String id, String address, double salario, double salario_inicial, Sindicato sindicato, int type, int tipo_pagamento, Agenda agenda, List<CartaoDePonto> cartoes, List<Vendas> vendas, String metodoPagamento)
   {
-    super(name, id, address, sindicato, type, tipo_pagamento, cartoes, vendas, metodoPagamento);
+    super(name, id, address, sindicato, type, tipo_pagamento, agenda, cartoes, vendas, metodoPagamento);
     this.salario = salario;
     this.salario_inicial = salario_inicial;
   }

@@ -13,9 +13,9 @@ public class Comissionado extends Empregado
     //this.salario = salario;
     //this.comissao = comissao;
   //} 
-  public Comissionado(String name, String id, String address, double salario, double salario_inicial, double comissao, Sindicato sindicato, int type, int tipo_pagamento, List<CartaoDePonto> cartoes, List<Vendas> vendas, String metodoPagamento)
+  public Comissionado(String name, String id, String address, double salario, double salario_inicial, double comissao, Sindicato sindicato, int type, int tipo_pagamento, Agenda agenda, List<CartaoDePonto> cartoes, List<Vendas> vendas, String metodoPagamento)
   {
-    super(name, id, address, sindicato, type, tipo_pagamento, cartoes, vendas, metodoPagamento);
+    super(name, id, address, sindicato, type, tipo_pagamento, agenda, cartoes, vendas, metodoPagamento);
     this.salario = salario;
     this.comissao = comissao;
     this.salario_inicial = salario_inicial;

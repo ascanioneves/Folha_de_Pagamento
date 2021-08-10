@@ -14,9 +14,10 @@ public abstract class Empregado
   private Sindicato sindicato;
   private int type;
   private int tipo_pagamento;
+  private Agenda agenda;
 
 
-  public Empregado(String name, String id, String address, Sindicato sindicato, int type, int tipo_pagamento, List<CartaoDePonto> cartoes, List<Vendas> vendas, String metodoPagamento)
+  public Empregado(String name, String id, String address, Sindicato sindicato, int type, int tipo_pagamento, Agenda agenda, List<CartaoDePonto> cartoes, List<Vendas> vendas, String metodoPagamento)
   {
     this.name = name;
     this.id = id;
@@ -25,6 +26,7 @@ public abstract class Empregado
     this.sindicato = sindicato;
     this.type = type;
     this.tipo_pagamento = tipo_pagamento;
+    this.agenda = agenda;
     this.vendas = new ArrayList<Vendas>();
     this.cartoes = new ArrayList<CartaoDePonto>();
   }
@@ -79,6 +81,12 @@ public abstract class Empregado
   }
   public void setMetodo(String metodoPagamento) {
     this.metodoPagamento = metodoPagamento;
+  }
+  public Agenda getAgenda() {
+    return agenda;
+  }
+  public void setAgenda(Agenda agenda) {
+    this.agenda = agenda;
   }
   @Override
     public String toString() 

@@ -7,9 +7,9 @@ public class Horista extends Empregado
 {
   private double salario_hora;
   private double salario;
-  public Horista(String name, String id, String address, double salario_hora, double salario, Sindicato sindicato, int type, int tipo_pagamento, List<CartaoDePonto> cartoes, List<Vendas> vendas, String metodoPagamento)
+  public Horista(String name, String id, String address, double salario_hora, double salario, Sindicato sindicato, int type, int tipo_pagamento, Agenda agenda, List<CartaoDePonto> cartoes, List<Vendas> vendas, String metodoPagamento)
   {
-    super(name, id, address, sindicato, type, tipo_pagamento, cartoes, vendas, metodoPagamento);
+    super(name, id, address, sindicato, type, tipo_pagamento, agenda, cartoes, vendas, metodoPagamento);
     this.salario_hora = salario_hora;
     this.salario = salario;
   }
